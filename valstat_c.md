@@ -290,37 +290,9 @@ ISO/IEC 9899:2018 -- Information technology — Programming languages — C, htt
 
 Value of the programming paradigm is best understood by seeing the code using it. The more the merrier. Here are a few more simple examples illustrating the valstat protocol and implementations applicability.
 
-### 7.1. valstat as a solution for known and difficult problems
-
-An perhaps very elegant solution to the "index out of bounds" problem. Using [my::valstat](#41-myvalstat) as already defined above. 
-
-```cpp
-// inside some sequence like container
-// note how we use pre existing std type
-// for the status field
- my::valstat< T , std::errc >
-     operator [] ( size_t idx_ ) 
-    {
-        if ( ! ( idx_ < size_ ) )
-        /* ERROR state + data */
-        return { {}, my::errc::invalid_argument };
-        /* OK state + data */
-        return { data_[idx_] , {} };
-    }
-```
-That usage of my::valstat alone resolves few difficult and well known design issues.
-```cpp
-auto [ value, status ] = my_vector[42] ;
-
-// first step: check the states
-if ( value  )  { /* second step: we are here just if state is OK     */ }
-if ( status )  { /* second step: we are here just if state is ERROR  */ }
-```
-No exceptions, no `assert()` and no `exit()`. 
-
 <span id="home_grown_crt_valstat" />
 
-### 8.2. Fully functional valstat type
+### Fully functional valstat type
 
 Let us assume we need to write a layer of safe proxies to some C run time (CRT) functions. We might use various valstat structs where the status field is actually the errno value. We can decalre them by hand or using simple macro
 
